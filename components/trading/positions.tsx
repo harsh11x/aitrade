@@ -22,7 +22,14 @@ export function Positions() {
           <div>
             <span className="text-muted-foreground">Invested: </span>
             <span className="font-mono">
-              ${positions.reduce((acc, pos) => acc + pos.entryPrice * pos.size, 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              ${positions.reduce((acc, pos) => acc + (pos.entryPrice * pos.size) / pos.leverage, 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </span>
+          </div>
+          <div>
+            <span className="text-muted-foreground">Realized P&L: </span>
+            <span className={`font-mono ${realizedPnL >= 0 ? "text-[hsl(145,70%,50%)]" : "text-[hsl(25,80%,55%)]"}`}>
+              {realizedPnL >= 0 ? "+" : ""}
+              ${Math.abs(realizedPnL).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
           </div>
           <div>
@@ -43,7 +50,9 @@ export function Positions() {
         <span>Symbol</span>
         <span>Side</span>
         <span className="text-right">Size</span>
-        <span className="text-right">Invested</span>
+        <span className="text-right">Size</span>
+        <span className="text-right">Invested (Margin)</span>
+        <span className="text-right">Mark</span>
         <span className="text-right">Mark</span>
         <span className="text-right">P&L</span>
         <span className="text-right">P&L %</span>
@@ -70,7 +79,7 @@ export function Positions() {
                 {position.side}
               </span>
               <span className="text-right font-mono">{position.size.toFixed(4)}</span>
-              <span className="text-right font-mono">${(position.entryPrice * position.size).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <span className="text-right font-mono">${((position.entryPrice * position.size) / position.leverage).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               <span className="text-right font-mono">${currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               <span
                 className={`text-right font-mono ${pnl >= 0 ? "text-[hsl(145,70%,50%)]" : "text-[hsl(25,80%,55%)]"}`}
