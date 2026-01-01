@@ -21,9 +21,50 @@ export function OrderPanel() {
   const handleSliderChange = (value: number[]) => {
     setSliderValue(value)
     const percentage = value[0] / 100
-    const amountValue = ((availableBalance * percentage) / Number.parseFloat(price || "1")).toFixed(6)
-    setAmount(amountValue)
-    setTotal((Number.parseFloat(amountValue) * Number.parseFloat(price || "0")).toFixed(2))
+    const totalValue = (availableBalance * percentage).toFixed(2)
+    setTotal(totalValue)
+    setAmount((Number.parseFloat(totalValue) / Number.parseFloat(price || "1")).toFixed(6))
+  }
+
+  const handleTotalChange = (value: string) => {
+    setTotal(value)
+    const totalVal = Number.parseFloat(value)
+    const priceVal = Number.parseFloat(price)
+    if (!isNaN(totalVal) && !isNaN(priceVal) && priceVal !== 0) {
+      setAmount((totalVal / priceVal).toFixed(6))
+    } else {
+      setAmount("")
+    }
+  }
+
+  const handleAmountChange = (value: string) => {
+    setAmount(value)
+    const amountVal = Number.parseFloat(value)
+    const priceVal = Number.parseFloat(price)
+    if (!isNaN(amountVal) && !isNaN(priceVal)) {
+      setTotal((amountVal * priceVal).toFixed(2))
+    } else {
+      setTotal("")
+    }
+  }
+
+  const handlePriceChange = (value: string) => {
+    setPrice(value)
+    // If we have a total (investment amount) set, keep it fixed and adjust amount
+    // OR keep amount fixed and adjust total?
+    // User wants "Value USDT" to mean amount we are buying.
+    // If I typed 34 USD, and price moves, I still want to spend 34 USD?
+    // Usually in limit orders, you set price and amount.
+    // Let's stick to: Update Total if Amount exists. But if Total was the last touched... logic gets complex.
+    // Simple approach: Recalculate Total based on Amount (standard).
+    // BUT user said "value usdt ... mean the amount we are buying".
+    // If they set Total to 34, then change price, maybe they still want 34?
+    // I will implement: If inputting Price, recalculate Total (standard).
+    const priceVal = Number.parseFloat(value)
+    const amountVal = Number.parseFloat(amount)
+    if (!isNaN(priceVal) && !isNaN(amountVal)) {
+      setTotal((amountVal * priceVal).toFixed(2))
+    }
   }
 
   return (
@@ -80,7 +121,7 @@ export function OrderPanel() {
               <Input
                 type="text"
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={(e) => handlePriceChange(e.target.value)}
                 className="pr-14 bg-secondary border-border font-mono"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">USDT</span>
@@ -95,7 +136,7 @@ export function OrderPanel() {
             <Input
               type="text"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => handleAmountChange(e.target.value)}
               placeholder="0.00"
               className="pr-12 bg-secondary border-border font-mono"
             />
@@ -128,7 +169,7 @@ export function OrderPanel() {
             <Input
               type="text"
               value={total}
-              onChange={(e) => setTotal(e.target.value)}
+              onChange={(e) => handleTotalChange(e.target.value)}
               placeholder="0.00"
               className="pr-14 bg-secondary border-border font-mono"
             />
@@ -164,11 +205,10 @@ export function OrderPanel() {
       {/* Submit Button */}
       <div className="p-3 border-t border-border">
         <Button
-          className={`w-full ${
-            side === "buy"
+          className={`w-full ${side === "buy"
               ? "bg-[hsl(145,70%,50%)] hover:bg-[hsl(145,70%,45%)] text-black"
               : "bg-[hsl(25,80%,55%)] hover:bg-[hsl(25,80%,50%)] text-white"
-          }`}
+            }`}
         >
           {side === "buy" ? "Buy" : "Sell"} BTC
         </Button>

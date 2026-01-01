@@ -10,11 +10,26 @@ export function Positions() {
       <div className="p-3 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h3 className="font-semibold text-sm">Positions</h3>
-          <span className="text-xs text-muted-foreground">3 Open</span>
+          <span className="text-xs text-muted-foreground">{samplePositions.length} Open</span>
         </div>
-        <div className="text-sm">
-          <span className="text-muted-foreground">Total P&L: </span>
-          <span className="text-[hsl(145,70%,50%)] font-mono">+$1,235.11 (+2.41%)</span>
+        <div className="flex gap-4 text-sm">
+          <div>
+            <span className="text-muted-foreground">Invested: </span>
+            <span className="font-mono">
+              ${samplePositions.reduce((acc, pos) => acc + pos.entryPrice * pos.quantity, 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </span>
+          </div>
+          <div>
+            <span className="text-muted-foreground">Unrealized P&L: </span>
+            <span className={`font-mono ${samplePositions.reduce((acc, pos) => acc + pos.pnl, 0) >= 0 ? "text-[hsl(145,70%,50%)]" : "text-[hsl(25,80%,55%)]"}`}>
+              {samplePositions.reduce((acc, pos) => acc + pos.pnl, 0) >= 0 ? "+" : ""}
+              ${Math.abs(samplePositions.reduce((acc, pos) => acc + pos.pnl, 0)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </span>
+          </div>
+          <div>
+            <span className="text-muted-foreground">Total P&L: </span>
+            <span className="text-[hsl(145,70%,50%)] font-mono">+$1,235.11 (+2.41%)</span>
+          </div>
         </div>
       </div>
 
@@ -22,7 +37,7 @@ export function Positions() {
         <span>Symbol</span>
         <span>Side</span>
         <span className="text-right">Size</span>
-        <span className="text-right">Entry</span>
+        <span className="text-right">Invested</span>
         <span className="text-right">Mark</span>
         <span className="text-right">P&L</span>
         <span className="text-right">P&L %</span>
@@ -43,7 +58,7 @@ export function Positions() {
               {position.side.toUpperCase()}
             </span>
             <span className="text-right font-mono">{position.quantity}</span>
-            <span className="text-right font-mono">${position.entryPrice.toLocaleString()}</span>
+            <span className="text-right font-mono">${(position.entryPrice * position.quantity).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             <span className="text-right font-mono">${position.currentPrice.toLocaleString()}</span>
             <span
               className={`text-right font-mono ${position.pnl >= 0 ? "text-[hsl(145,70%,50%)]" : "text-[hsl(25,80%,55%)]"}`}

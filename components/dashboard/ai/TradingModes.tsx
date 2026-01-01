@@ -21,6 +21,11 @@ export function TradingModes() {
     const [price, setPrice] = useState<string>('')
     const [leverage, setLeverage] = useState<number>(20)
 
+    // Auto Mode Settings
+    const [autoMaxProfit, setAutoMaxProfit] = useState<string>("2.5") // %
+    const [autoStopLoss, setAutoStopLoss] = useState<string>("1.5")   // %
+    const [autoLeverage, setAutoLeverage] = useState<number>(20)
+
     // TPSL State
     // const [suggestedSL, setSuggestedSL] = useState((currentPrice * 0.99).toFixed(2))
     // const [suggestedTP, setSuggestedTP] = useState((currentPrice * 1.02).toFixed(2))
@@ -93,10 +98,18 @@ export function TradingModes() {
                     if (Math.random() > 0.6) {
                         const sideStr = trend === 'BULLISH' ? 'LONG' : 'SHORT'
                         const size = 1500 + Math.random() * 1000
-                        const sl = sideStr === 'LONG' ? currentPriceVal * 0.99 : currentPriceVal * 1.01
-                        const tp = sideStr === 'LONG' ? currentPriceVal * 1.02 : currentPriceVal * 0.98
+                        const tpPercent = parseFloat(autoMaxProfit) / 100
+                        const slPercent = parseFloat(autoStopLoss) / 100
 
-                        openPosition('BTC/USDT', sideStr, size, 20, sl, tp)
+                        const sl = sideStr === 'LONG'
+                            ? currentPriceVal * (1 - slPercent)
+                            : currentPriceVal * (1 + slPercent)
+
+                        const tp = sideStr === 'LONG'
+                            ? currentPriceVal * (1 + tpPercent)
+                            : currentPriceVal * (1 - tpPercent)
+
+                        openPosition('BTC/USDT', sideStr, size, autoLeverage, sl, tp)
                         addLog(`EXECUTION: ${sideStr} ${size.toFixed(0)} USDT @ ${currentPriceVal.toFixed(1)}`, 'success')
 
                         if (volatility > 0.1) {
@@ -349,6 +362,38 @@ export function TradingModes() {
                         )}
                     </GlassCard>
 
+                    {/* Auto Configuration */}
+                    <div className="grid grid-cols-3 gap-2 px-1">
+                        <div className="space-y-1">
+                            <label className="text-[10px] text-gray-400">Max Profit (%)</label>
+                            <Input
+                                type="number"
+                                value={autoMaxProfit}
+                                onChange={e => setAutoMaxProfit(e.target.value)}
+                                className="h-7 text-xs bg-white/5 border-white/10"
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-[10px] text-gray-400">Stop Loss (%)</label>
+                            <Input
+                                type="number"
+                                value={autoStopLoss}
+                                onChange={e => setAutoStopLoss(e.target.value)}
+                                className="h-7 text-xs bg-white/5 border-white/10"
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-[10px] text-gray-400">Leverage ({autoLeverage}x)</label>
+                            <input
+                                type="range"
+                                min="1" max="100"
+                                value={autoLeverage}
+                                onChange={e => setAutoLeverage(Number(e.target.value))}
+                                className="w-full h-7 accent-cyan-500 bg-transparent"
+                            />
+                        </div>
+                    </div>
+
 
                     {/* Clean Terminal */}
                     <div className="flex-1 bg-[#09090b] border border-white/10 rounded-lg overflow-hidden flex flex-col font-mono text-xs relative">
@@ -371,8 +416,8 @@ export function TradingModes() {
                                 <div key={i} className="flex gap-2 text-[11px] animate-in fade-in slide-in-from-left-2 duration-100">
                                     <span className="text-gray-600 shrink-0 select-none">[{log.time}]</span>
                                     <span className={`${log.type === 'success' ? 'text-green-400' :
-                                            log.type === 'warning' ? 'text-yellow-400' :
-                                                log.type === 'error' ? 'text-red-400' : 'text-gray-300'
+                                        log.type === 'warning' ? 'text-yellow-400' :
+                                            log.type === 'error' ? 'text-red-400' : 'text-gray-300'
                                         } break-all`}>
                                         {log.msg}
                                     </span>
