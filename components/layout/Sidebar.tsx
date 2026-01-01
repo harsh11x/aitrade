@@ -8,7 +8,12 @@ import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-export function Sidebar() {
+interface SidebarProps {
+    isOpen?: boolean;
+    onClose?: () => void;
+}
+
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
     const pathname = usePathname()
     const [isCollapsed, setIsCollapsed] = useState(true)
 
@@ -24,10 +29,19 @@ export function Sidebar() {
     return (
         <GlassCard
             className={cn(
-                "border-r border-white/5 flex flex-col justify-between py-6 z-20 transition-all duration-300",
-                isCollapsed ? "w-20" : "w-64"
+                "border-r border-white/5 flex flex-col justify-between py-6 z-50 transition-all duration-300 backdrop-blur-xl bg-black/80 lg:bg-black/20",
+                "fixed lg:relative h-full",
+                isOpen ? "translate-x-0 w-64" : "-translate-x-full lg:translate-x-0",
+                isCollapsed ? "lg:w-20" : "lg:w-64"
             )}
         >
+            {/* Mobile Overlay Background */}
+            {isOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 z-[-1] lg:hidden backdrop-blur-sm"
+                    onClick={onClose}
+                />
+            )}
             <div>
                 {/* Header / Logo (Toggle) */}
                 <div

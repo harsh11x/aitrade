@@ -77,7 +77,7 @@ export function MarketOverview() {
     return (
         <div ref={wrapperRef} className="h-full w-full">
             <GlassCard className="flex flex-col p-0 overflow-hidden transition-all duration-300 relative group h-full">
-                <div id="tradingview_widget" className="w-full h-full min-h-[500px]" ref={containerRef} />
+                <div id="tradingview_widget" className="w-full h-full min-h-[300px] md:min-h-[500px]" ref={containerRef} />
 
                 {/* Overlay Controls */}
                 <div className="absolute top-4 right-20 z-10 opacity-0 group-hover:opacity-100 transition-opacity">

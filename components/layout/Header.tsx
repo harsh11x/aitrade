@@ -1,6 +1,6 @@
 "use client"
 
-import { Search, Bell, ChevronRight, Home, Trash2 } from "lucide-react"
+import { Search, Bell, ChevronRight, Home, Trash2, Menu } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { GradientButton } from "@/components/ui/gradient-button"
@@ -8,17 +8,22 @@ import { AuthModal } from "@/components/auth/AuthModal"
 import { Wallet } from "lucide-react"
 import { useTrading } from "@/lib/context/TradingContext"
 
-export function Header() {
+export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
     const { resetAccount } = useTrading()
     return (
         <header className="flex items-center justify-between px-6 py-4 bg-transparent sticky top-0 z-10 animate-in fade-in slide-in-from-top-2 duration-500">
             {/* Left: Breadcrumbs / Page Title */}
             <div className="flex items-center gap-2 text-sm text-gray-500">
-                <Home className="w-4 h-4 hover:text-white transition-colors cursor-pointer" />
-                <ChevronRight className="w-4 h-4" />
-                <span className="text-gray-300 font-medium hover:text-white transition-colors cursor-pointer">Dashboard</span>
-                <ChevronRight className="w-4 h-4" />
-                <span className="text-white font-bold">Trade</span>
+                <Button variant="ghost" size="icon" className="lg:hidden text-white -ml-2" onClick={onMenuClick}>
+                    <Menu className="w-5 h-5" />
+                </Button>
+                <div className="hidden sm:flex items-center gap-2">
+                    <Home className="w-4 h-4 hover:text-white transition-colors cursor-pointer" />
+                    <ChevronRight className="w-4 h-4" />
+                    <span className="text-gray-300 font-medium hover:text-white transition-colors cursor-pointer">Dashboard</span>
+                    <ChevronRight className="w-4 h-4" />
+                    <span className="text-white font-bold">Trade</span>
+                </div>
             </div>
 
             <div className="flex items-center gap-8 flex-1 justify-center max-w-xl mx-auto hidden md:flex">

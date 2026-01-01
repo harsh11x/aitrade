@@ -11,7 +11,7 @@ export function BottomPanel() {
     return (
         <div className="h-full flex flex-col overflow-hidden bg-black/20 font-sans">
             {/* Simple Stats Bar */}
-            <div className="flex items-center gap-6 px-4 py-2 border-b border-white/5 bg-black/40 text-xs text-gray-400 shrink-0">
+            <div className="flex items-center gap-6 px-4 py-2 border-b border-white/5 bg-black/40 text-xs text-gray-400 shrink-0 overflow-x-auto no-scrollbar">
                 <div className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                     <span>Market Open</span>
