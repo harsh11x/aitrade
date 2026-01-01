@@ -23,6 +23,13 @@ export function BottomPanel() {
                 </div>
                 <div className="h-3 w-[1px] bg-white/10" />
                 <div>
+                    <span className="text-gray-500 mr-2">Realized P&L</span>
+                    <span className={`font-mono font-bold ${history.reduce((acc, t) => acc + t.pnl, 0) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        {history.reduce((acc, t) => acc + t.pnl, 0) >= 0 ? '+' : ''}{history.reduce((acc, t) => acc + t.pnl, 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                </div>
+                <div className="h-3 w-[1px] bg-white/10" />
+                <div>
                     <span className="text-gray-500 mr-2">Unrealized P&L</span>
                     <span className={`font-mono font-bold ${unrealizedPnL >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                         {unrealizedPnL >= 0 ? '+' : ''}{unrealizedPnL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -68,7 +75,7 @@ export function BottomPanel() {
                                 {activeTab === 'open_orders' ? (
                                     <>
                                         <th className="px-6 py-3">Symbol</th>
-                                        <th className="px-6 py-3">Value (USDT)</th>
+                                        <th className="px-6 py-3">Invested (Margin)</th>
                                         <th className="px-6 py-3">Entry Price</th>
                                         <th className="px-6 py-3">Mark Price</th>
                                         <th className="px-6 py-3">PnL</th>
@@ -79,7 +86,7 @@ export function BottomPanel() {
                                         <th className="px-6 py-3">Time</th>
                                         <th className="px-6 py-3">Symbol</th>
                                         <th className="px-6 py-3">Side</th>
-                                        <th className="px-6 py-3">Value (USDT)</th>
+                                        <th className="px-6 py-3">Invested (Margin)</th>
                                         <th className="px-6 py-3">Close Price</th>
                                         <th className="px-6 py-3 text-right">Realized PnL</th>
                                     </>
@@ -95,8 +102,9 @@ export function BottomPanel() {
                                 ) : (
                                     positions.map(pos => {
                                         const pnl = (currentPrice - pos.entryPrice) * pos.size * (pos.side === 'LONG' ? 1 : -1)
-                                        const pnlPercent = (pnl / ((pos.size * pos.entryPrice) / pos.leverage)) * 100
-                                        const value = pos.size * pos.entryPrice
+                                        // Margin = (Size * Entry) / Leverage
+                                        const invested = (pos.size * pos.entryPrice) / pos.leverage
+                                        const pnlPercent = (pnl / invested) * 100
                                         return (
                                             <tr key={pos.id} className="hover:bg-white/[0.02] transition-colors">
                                                 <td className="px-6 py-3 font-medium text-white flex items-center gap-2">
@@ -106,7 +114,7 @@ export function BottomPanel() {
                                                         {pos.side} {pos.leverage}x
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-3 text-gray-300 font-mono">${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                                <td className="px-6 py-3 text-gray-300 font-mono">${invested.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                                 <td className="px-6 py-3 text-gray-300 font-mono">${pos.entryPrice.toFixed(2)}</td>
                                                 <td className="px-6 py-3 text-gray-300 font-mono">${currentPrice.toFixed(2)}</td>
                                                 <td className="px-6 py-3 font-mono">
@@ -144,7 +152,7 @@ export function BottomPanel() {
                                             <td className={`px-6 py-3 font-bold text-[11px] ${trade.side === 'LONG' ? 'text-green-400' : 'text-red-400'}`}>
                                                 {trade.side}
                                             </td>
-                                            <td className="px-6 py-3 text-gray-300 font-mono">${(trade.size * trade.entryPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                            <td className="px-6 py-3 text-gray-300 font-mono">${((trade.size * trade.entryPrice) / trade.leverage).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                             <td className="px-6 py-3 text-gray-300 font-mono">${trade.closePrice.toFixed(2)}</td>
                                             <td className={`px-6 py-3 text-right font-mono font-bold ${trade.pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                                                 {trade.pnl >= 0 ? '+' : ''}{trade.pnl.toFixed(2)}

@@ -9,7 +9,7 @@ import { useTrading } from "@/lib/context/TradingContext"
 import { DepositWithdrawModal } from "./DepositWithdrawModal"
 
 export function BalanceCard() {
-    const { equity } = useTrading()
+    const { equity, balance } = useTrading()
 
     return (
         <GlassCard className="flex flex-col gap-6">
@@ -23,7 +23,7 @@ export function BalanceCard() {
             <div>
                 <div className="flex items-center justify-between mb-2">
                     <h2 className="text-3xl font-bold text-white tracking-tight">
-                        {equity.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                        {balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
                     </h2>
                     <div className="flex items-center gap-1 bg-white/5 border border-white/10 px-2 py-1 rounded-md">
                         <Wallet className="w-4 h-4 text-gray-400" />
