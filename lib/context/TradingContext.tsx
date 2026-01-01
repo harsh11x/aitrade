@@ -285,6 +285,9 @@ export function TradingProvider({ children }: { children: ReactNode }) {
 
         setBalance(prev => prev + margin + finalPnL)
 
+        const openFee = (pos.size * pos.entryPrice) * LEVERAGE_COST
+        const netPnL = finalPnL - openFee
+
         // Add to History
         const historyItem: TradeHistory = {
             id: pos.id,
@@ -293,8 +296,8 @@ export function TradingProvider({ children }: { children: ReactNode }) {
             size: pos.size,
             entryPrice: pos.entryPrice,
             closePrice: currentPrice,
-            pnl: finalPnL,
-            pnlPercent: (finalPnL / margin) * 100,
+            pnl: netPnL,
+            pnlPercent: (netPnL / margin) * 100,
             closeTime: Date.now(),
             leverage: pos.leverage
         }
@@ -317,6 +320,9 @@ export function TradingProvider({ children }: { children: ReactNode }) {
             totalPnLToAdd += finalPnL
             totalMarginRef += margin
 
+            const openFee = (pos.size * pos.entryPrice) * LEVERAGE_COST
+            const netPnL = finalPnL - openFee
+
             newHistoryItems.push({
                 id: pos.id,
                 symbol: pos.symbol,
@@ -324,8 +330,8 @@ export function TradingProvider({ children }: { children: ReactNode }) {
                 size: pos.size,
                 entryPrice: pos.entryPrice,
                 closePrice: currentPrice,
-                pnl: finalPnL,
-                pnlPercent: (finalPnL / margin) * 100,
+                pnl: netPnL,
+                pnlPercent: (netPnL / margin) * 100,
                 closeTime: Date.now(),
                 leverage: pos.leverage
             })
