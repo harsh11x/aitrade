@@ -42,10 +42,12 @@ export function TradingModes() {
         if (recentPrices.current.length > 20) recentPrices.current.shift()
     }, [currentPrice])
 
-    const logsEndRef = useRef<HTMLDivElement>(null)
+    const logsContainerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        logsEndRef.current?.scrollIntoView({ behavior: "smooth" })
+        if (logsContainerRef.current) {
+            logsContainerRef.current.scrollTop = logsContainerRef.current.scrollHeight
+        }
     }, [logs])
 
     const latestPriceRef = useRef(currentPrice)
@@ -408,7 +410,7 @@ export function TradingModes() {
                         </div>
 
                         {/* Logs */}
-                        <div className="flex-1 overflow-y-auto p-3 space-y-1.5 custom-scrollbar">
+                        <div ref={logsContainerRef} className="flex-1 overflow-y-auto p-3 space-y-1.5 custom-scrollbar">
                             {logs.length === 0 && (
                                 <div className="text-gray-700 italic text-center mt-10">System ready. Waiting for input...</div>
                             )}
@@ -423,7 +425,7 @@ export function TradingModes() {
                                     </span>
                                 </div>
                             ))}
-                            <div ref={logsEndRef} />
+                            {/* Removed logsEndRef */}
                         </div>
 
                         {/* Input Line */}
