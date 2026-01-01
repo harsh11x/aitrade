@@ -47,7 +47,7 @@ export function MarketTicker() {
 
     return (
         <div className="h-8 bg-black/40 border-b border-white/5 flex items-center px-4 overflow-hidden whitespace-nowrap z-40 backdrop-blur-sm">
-            <div className="flex items-center gap-6 text-[10px] font-mono text-gray-400 w-full">
+            <div className="flex items-center gap-6 text-[11px] font-mono text-gray-400 w-full">
 
                 {/* Static Status Items */}
                 <span className="flex items-center gap-1.5 text-green-500 shrink-0">

@@ -396,7 +396,7 @@ export function TradingModes() {
 
 
                     {/* Clean Terminal */}
-                    <div className="flex-1 bg-[#09090b] border border-white/10 rounded-lg overflow-hidden flex flex-col font-mono text-xs relative">
+                    <div className="h-[250px] shrink-0 bg-[#09090b] border border-white/10 rounded-lg overflow-hidden flex flex-col font-mono text-xs relative">
                         {/* Terminal Header */}
                         <div className="flex items-center justify-between px-3 py-1.5 bg-white/5 border-b border-white/5 text-[10px] text-gray-500">
                             <span className="flex items-center gap-2">

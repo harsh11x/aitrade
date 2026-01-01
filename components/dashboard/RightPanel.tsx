@@ -18,7 +18,7 @@ export function RightPanel() {
     return (
         <div className="h-full flex flex-col bg-black/20 backdrop-blur-sm">
             <Tabs defaultValue="ai" className="h-full flex flex-col p-2 gap-2">
-                <TabsList className="bg-black/40 border border-white/5 rounded-xl p-1 h-auto w-full grid grid-cols-3 gap-1">
+                <TabsList className="bg-black/40 border border-white/5 rounded-xl p-1 h-auto w-full grid grid-cols-3 gap-1 overflow-x-auto no-scrollbar shrink-0">
                     <TabsTrigger
                         value="market"
                         className="data-[state=active]:bg-white/10 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-500 text-[10px] uppercase font-bold tracking-wider py-2.5 rounded-lg transition-all"
@@ -52,7 +52,7 @@ export function RightPanel() {
 
                         <div className="flex flex-col gap-2">
                             {cryptos.map((c, i) => (
-                                <div key={i} className="flex items-center justify-between group cursor-pointer hover:bg-white/5 p-2 rounded-lg -mx-2 transition-colors border border-transparent hover:border-white/5">
+                                <div key={i} className="flex items-center justify-between group cursor-pointer hover:bg-white/5 p-3 rounded-lg -mx-2 transition-colors border border-transparent hover:border-white/5">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-full border border-dashed border-pink-500/50 flex items-center justify-center text-xs font-bold text-pink-500 bg-pink-500/5">
                                             {c.icon}
@@ -116,7 +116,7 @@ export function RightPanel() {
                                     { p: "42,353.50", a: "0.1500" },
                                     { p: "42,352.00", a: "0.8542" },
                                 ].reverse().map((row, i) => (
-                                    <div key={i} className="flex justify-between items-center text-[11px] py-0.5 px-1 relative cursor-pointer hover:bg-white/5 transition-colors group">
+                                    <div key={i} className="flex justify-between items-center text-xs py-1 px-1 relative cursor-pointer hover:bg-white/5 transition-colors group">
                                         <span className="text-red-400 group-hover:text-red-300">{row.p}</span>
                                         <span className="text-gray-400 group-hover:text-white">{row.a}</span>
                                         <div className="absolute right-0 top-0 bottom-0 bg-red-500/5 w-[30%]" />
@@ -135,7 +135,7 @@ export function RightPanel() {
                                     { p: "42,342.00", a: "0.2242" },
                                     { p: "42,341.00", a: "1.0023" },
                                 ].map((row, i) => (
-                                    <div key={i} className="flex justify-between items-center text-[11px] py-0.5 px-1 relative cursor-pointer hover:bg-white/5 transition-colors group">
+                                    <div key={i} className="flex justify-between items-center text-xs py-1 px-1 relative cursor-pointer hover:bg-white/5 transition-colors group">
                                         <span className="text-green-400 group-hover:text-green-300">{row.p}</span>
                                         <span className="text-gray-400 group-hover:text-white">{row.a}</span>
                                         <div className="absolute right-0 top-0 bottom-0 bg-green-500/5 w-[40%]" />

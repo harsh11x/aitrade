@@ -21,7 +21,7 @@ export function LeftPanel() {
                         className="pl-9 h-9 text-xs bg-black/40 border-white/5 text-white rounded-xl focus-visible:ring-1 focus-visible:ring-pink-500/50 hover:bg-white/5 transition-all w-full"
                     />
                 </div>
-                <Button size="icon" variant="ghost" className="h-9 w-9 text-gray-500 hover:text-white hover:bg-white/10 rounded-xl">
+                <Button size="icon" variant="ghost" className="h-9 w-9 text-gray-500 hover:text-white hover:bg-white/10 rounded-xl shrink-0">
                     <SlidersHorizontal className="w-4 h-4" />
                 </Button>
             </div>
@@ -63,7 +63,7 @@ export function LeftPanel() {
                         { p: "ATOM", q: "USDT", v: "9.85", c: "-2.1%", color: "text-red-500", chart: "red" },
                         { p: "LTC", q: "USDT", v: "65.40", c: "+0.1%", color: "text-green-500", chart: "green" },
                     ].map((pair, i) => (
-                        <div key={i} className="relative group p-2.5 rounded-xl border border-transparent hover:border-white/5 hover:bg-white/5 transition-all cursor-pointer">
+                        <div key={i} className="relative group p-3 rounded-xl border border-transparent hover:border-white/5 hover:bg-white/5 transition-all cursor-pointer">
                             {/* Hover Gradient */}
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
 
@@ -73,7 +73,7 @@ export function LeftPanel() {
                                     <div>
                                         <div className="flex items-baseline gap-1">
                                             <span className="text-sm font-bold text-white">{pair.p}</span>
-                                            <span className="text-[9px] font-bold text-gray-600">/{pair.q}</span>
+                                            <span className="text-[10px] font-bold text-gray-600">/{pair.q}</span>
                                         </div>
                                         {/* Vol Mock */}
                                         <div className="text-[9px] text-gray-600 font-mono">Vol 24M</div>
@@ -82,7 +82,7 @@ export function LeftPanel() {
 
                                 <div className="text-right">
                                     <div className="text-xs font-mono font-medium text-gray-200 group-hover:text-white transition-colors">{pair.v}</div>
-                                    <div className={`text-[10px] font-bold ${pair.color} bg-black/40 px-1 rounded inline-block mt-0.5`}>{pair.c}</div>
+                                    <div className={`text-[11px] font-bold ${pair.color} bg-black/40 px-1.5 py-0.5 rounded inline-block mt-0.5`}>{pair.c}</div>
                                 </div>
                             </div>
 
