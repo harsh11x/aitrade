@@ -1,0 +1,188 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Momentum / Xfolio Theme */
+:root {
+    /* Pure Black */
+    --background: oklch(0 0 0);
+    /* Pure White */
+    --foreground: oklch(1 0 0);
+
+    /* Very Dark Glass */
+    --card: oklch(0.02 0 0 / 0.8);
+    --card-foreground: oklch(1 0 0);
+
+    --popover: oklch(0.05 0 0);
+    --popover-foreground: oklch(1 0 0);
+
+    /* Primary is now Electric White/Pink */
+    --primary: oklch(0.62 0.23 350);
+    /* Neon Pink */
+    --primary-foreground: oklch(1 0 0);
+
+    --secondary: oklch(0.12 0 0);
+    --secondary-foreground: oklch(1 0 0);
+
+    --muted: oklch(0.12 0 0);
+    --muted-foreground: oklch(0.55 0 0);
+
+    --accent: oklch(0.12 0 0);
+    --accent-foreground: oklch(1 0 0);
+
+    --destructive: oklch(0.6 0.2 25);
+    --destructive-foreground: oklch(1 0 0);
+
+    --border: oklch(0.15 0 0);
+    --input: oklch(0.15 0 0);
+    --ring: oklch(0.62 0.23 350);
+    /* Neon Pink Ring */
+
+    --radius: 0.75rem;
+
+    /* Chart Colors - High Contrast */
+    --chart-1: oklch(0.9 0.15 140);
+    /* Lime Green */
+    --chart-2: oklch(0.6 0.25 290);
+    /* Purple */
+    --chart-3: oklch(0.6 0.2 250);
+    /* Blue */
+    --chart-4: oklch(0.95 0.1 80);
+    /* Yellow */
+    --chart-5: oklch(1 0 0);
+    /* White */
+
+    /* Trading Indicators */
+    --bullish: oklch(0.75 0.2 145);
+    /* Neon Green */
+    --bearish: oklch(0.62 0.23 350);
+    /* Neon Pink/Red */
+    --neutral: oklch(0.5 0 0);
+    /* Gray */
+
+    --sidebar: oklch(0 0 0);
+    --sidebar-foreground: oklch(1 0 0);
+    --sidebar-primary: oklch(1 0 0);
+    --sidebar-primary-foreground: oklch(0 0 0);
+    --sidebar-accent: oklch(0.12 0 0);
+    --sidebar-accent-foreground: oklch(1 0 0);
+    --sidebar-border: oklch(0.15 0 0);
+    --sidebar-ring: oklch(1 0 0);
+}
+
+@theme inline {
+    --font-sans: "Inter", "Geist", "Geist Fallback", sans-serif;
+    --font-mono: "Geist Mono", "Geist Mono Fallback", monospace;
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    --color-bullish: var(--bullish);
+    --color-bearish: var(--bearish);
+    --color-neutral: var(--neutral);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+        background-color: #050505;
+        /* Deep Black Background */
+        background-image:
+            radial-gradient(circle at 50% 0%, rgba(236, 72, 153, 0.05) 0%, transparent 40%),
+            radial-gradient(circle at 80% 10%, rgba(6, 182, 212, 0.05) 0%, transparent 30%);
+    }
+
+    /* Sleek Selection */
+    ::selection {
+        background: #ec4899;
+        color: #ffffff;
+    }
+}
+
+/* Utilities */
+.glass-panel {
+    @apply bg-black/40 backdrop-blur-xl border border-white/5 shadow-2xl;
+}
+
+.glass-panel-hover {
+    @apply hover:bg-white/5 hover:border-white/20 transition-all duration-300;
+}
+
+.text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400;
+}
+
+.text-neon-pink {
+    text-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+    @apply text-pink-500;
+}
+
+.text-neon-cyan {
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+    @apply text-cyan-400;
+}
+
+/* Ultra-Slim Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #262626;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #404040;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
