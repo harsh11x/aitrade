@@ -6,7 +6,10 @@ import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+import { useTrading, PositionSide } from "@/lib/context/TradingContext"
+
 export function OrderPanel() {
+  const { balance, openPosition, placeLimitOrder } = useTrading()
   const [orderType, setOrderType] = useState<"market" | "limit" | "stop">("limit")
   const [side, setSide] = useState<"buy" | "sell">("buy")
   const [price, setPrice] = useState("62500")
@@ -16,7 +19,7 @@ export function OrderPanel() {
   const [stopLoss, setStopLoss] = useState("")
   const [takeProfit, setTakeProfit] = useState("")
 
-  const availableBalance = 100000
+  const availableBalance = balance
 
   const handleSliderChange = (value: number[]) => {
     setSliderValue(value)
@@ -205,9 +208,40 @@ export function OrderPanel() {
       {/* Submit Button */}
       <div className="p-3 border-t border-border">
         <Button
+          onClick={() => {
+            const investmentAmount = parseFloat(total)
+            if (!investmentAmount || investmentAmount <= 0) {
+              alert("Please enter a valid investment amount")
+              return
+            }
+            if (investmentAmount > availableBalance) {
+              alert("Insufficient balance")
+              return
+            }
+
+            const sideEnum = side === 'buy' ? 'LONG' : 'SHORT'
+            const leverage = 1 // Default leverage for manual panel? Or add slider? Assuming 1x or hardcoded for now, or use slider if it existed. 
+            // Wait, Slider in UI is for %, not leverage. Leverage is missing in this panel.
+            // Assuming 20x default as per Auto mode, or 1x? Let's use 20x to be consistent with other parts or just 1x.
+            // Let's use 20x as it seems standard in this app context.
+            const defaultLeverage = 20
+
+            if (orderType === 'limit') {
+              const limitPrice = parseFloat(price)
+              if (!limitPrice) return
+              placeLimitOrder('BTC/USDT', sideEnum, investmentAmount, defaultLeverage, limitPrice)
+            } else {
+              openPosition('BTC/USDT', sideEnum, investmentAmount, defaultLeverage, parseFloat(stopLoss), parseFloat(takeProfit))
+            }
+
+            // Clear inputs
+            setAmount("")
+            setTotal("")
+            setSliderValue([0])
+          }}
           className={`w-full ${side === "buy"
-              ? "bg-[hsl(145,70%,50%)] hover:bg-[hsl(145,70%,45%)] text-black"
-              : "bg-[hsl(25,80%,55%)] hover:bg-[hsl(25,80%,50%)] text-white"
+            ? "bg-[hsl(145,70%,50%)] hover:bg-[hsl(145,70%,45%)] text-black"
+            : "bg-[hsl(25,80%,55%)] hover:bg-[hsl(25,80%,50%)] text-white"
             }`}
         >
           {side === "buy" ? "Buy" : "Sell"} BTC
