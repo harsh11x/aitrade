@@ -83,7 +83,7 @@ export default function SignupPage() {
           </Link>
 
           <h1 className="text-2xl font-bold text-foreground mb-2">Create your account</h1>
-          <p className="text-muted-foreground mb-8">Start your 14-day free trial. No credit card required.</p>
+          <p className="text-muted-foreground mb-8">Start your trading journey with $100K virtual funds.</p>
 
           {/* Social Signup */}
           <div className="grid grid-cols-2 gap-3 mb-6">

@@ -83,7 +83,7 @@ export function useTrading() {
 
 const INITIAL_BALANCE = 100000 // $100k Paper Money
 const INITIAL_PRICE = 42350.00
-const LEVERAGE_COST = 0.0006 // 0.06% Trading Fee
+const LEVERAGE_COST = 0 // 0% Trading Fee
 
 // Random Walk Simulation
 function useMarketSimulation() {
