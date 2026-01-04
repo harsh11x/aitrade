@@ -136,39 +136,39 @@ export const DEFAULT_AGENT_CONFIG: AIAgentConfig = {
 }
 
 // Mock analysis generator for demonstration
-export function generateMarketAnalysis(symbol: string): MarketAnalysis {
+export function generateMarketAnalysis(symbol: string, currentPrice: number): MarketAnalysis {
   const trends = ["bullish", "bearish", "neutral"] as const
   const trend = trends[Math.floor(Math.random() * 3)]
-  const basePrice = symbol.includes("BTC") ? 62500 : symbol.includes("ETH") ? 3400 : 145
+  const basePrice = currentPrice
 
   return {
     symbol,
     timeframe: "4H",
     trend,
     strength: Math.floor(Math.random() * 40) + 60,
-    supportLevels: [basePrice * 0.98, basePrice * 0.95, basePrice * 0.92],
-    resistanceLevels: [basePrice * 1.02, basePrice * 1.05, basePrice * 1.08],
+    supportLevels: [basePrice * 0.985, basePrice * 0.965, basePrice * 0.94],
+    resistanceLevels: [basePrice * 1.015, basePrice * 1.035, basePrice * 1.06],
     liquidityZones: [
       { price: basePrice * 0.97, type: "buy", strength: 85 },
       { price: basePrice * 1.03, type: "sell", strength: 78 },
     ],
     patterns: [
-      { type: "Higher High", direction: "bullish", reliability: 75 },
-      { type: "Bullish Order Block", direction: "bullish", reliability: 82 },
+      { type: "Liquidity Sweep", direction: trend === 'bullish' ? "bullish" : "bearish", reliability: 85 },
+      { type: "FVG Retest", direction: trend === 'bullish' ? "bullish" : "bearish", reliability: 78 },
     ],
     indicators: [
-      { name: "RSI", value: 58, signal: "neutral", strength: 60 },
-      { name: "MACD", value: 0.5, signal: "buy", strength: 70 },
-      { name: "EMA 200", value: basePrice * 0.98, signal: "buy", strength: 80 },
-      { name: "VWAP", value: basePrice * 0.995, signal: "buy", strength: 65 },
+      { name: "RSI", value: trend === 'bullish' ? 42 : 68, signal: trend === 'bullish' ? "buy" : "sell", strength: 60 },
+      { name: "MACD", value: 0.5, signal: trend === 'bullish' ? "buy" : "sell", strength: 70 },
+      { name: "EMA 200", value: basePrice * (trend === 'bullish' ? 0.99 : 1.01), signal: trend === 'bullish' ? "buy" : "sell", strength: 80 },
+      { name: "VWAP", value: basePrice * (trend === 'bullish' ? 0.995 : 1.005), signal: trend === 'bullish' ? "buy" : "sell", strength: 65 },
     ],
     sentiment: {
-      overall: "bullish",
-      news: 45,
-      social: 62,
-      onChain: 71,
+      overall: trend,
+      news: trend === 'bullish' ? 65 : -45,
+      social: trend === 'bullish' ? 72 : -30,
+      onChain: trend === 'bullish' ? 55 : -20,
     },
-    confidence: Math.floor(Math.random() * 20) + 70,
+    confidence: Math.floor(Math.random() * 15) + 80, // Higher confidence
   }
 }
 
@@ -176,7 +176,13 @@ export function generateMarketAnalysis(symbol: string): MarketAnalysis {
 export function generateTradeSignal(analysis: MarketAnalysis): TradeSignal | null {
   if (analysis.confidence < 70) return null
 
-  const basePrice = analysis.symbol.includes("BTC") ? 62500 : analysis.symbol.includes("ETH") ? 3400 : 145
+  // Use the resistance/support or mid price as base
+  const basePrice = (analysis.supportLevels[0] + analysis.resistanceLevels[0]) / 2
+  // Wait, I should pass the current price or just use levels. 
+  // Actually, I can infer close price from levels roughly, but better to use what was passed.
+  // The 'analysis' object doesn't have currentPrice field, but I generated levels relative to it.
+  // Let's assume the mid-point of immediate S/R is roughly price.
+
   const side = analysis.trend === "bullish" ? "long" : analysis.trend === "bearish" ? "short" : null
 
   if (!side) return null

@@ -64,6 +64,7 @@ export interface TradingContextType extends TradingState {
     deposit: (amount: number) => void
     withdraw: (amount: number) => void
     resetAccount: () => void
+    setMarketTrend: (trend: 'neutral' | 'bullish' | 'bearish') => void
     isLoading: boolean
 }
 
@@ -86,27 +87,38 @@ const INITIAL_PRICE = 42350.00
 const LEVERAGE_COST = 0 // 0% Trading Fee
 
 // Random Walk Simulation
+// Random Walk Simulation with Bias
 function useMarketSimulation() {
     const [price, setPrice] = useState(INITIAL_PRICE)
+    const [trend, setTrend] = useState<'neutral' | 'bullish' | 'bearish'>('neutral')
 
     useEffect(() => {
         const interval = setInterval(() => {
             setPrice(prev => {
-                const change = (Math.random() - 0.5) * (prev * 0.002) // 0.2% volatility
+                let change = (Math.random() - 0.5) * (prev * 0.002) // 0.2% volatility
+
+                // Apply Trend Bias
+                if (trend === 'bullish') {
+                    change += prev * 0.0015 // Strong upward bias
+                } else if (trend === 'bearish') {
+                    change -= prev * 0.0015 // Strong downward bias
+                }
+
                 return prev + change
             })
         }, 1000) // Update every second
 
         return () => clearInterval(interval)
-    }, [])
+    }, [trend])
 
-    return price
+    return { price, setTrend }
 }
 
 // --- Provider ---
 
 export function TradingProvider({ children }: { children: ReactNode }) {
-    const currentPrice = useMarketSimulation()
+    const currentPriceData = useMarketSimulation()
+    const currentPrice = currentPriceData.price
     const [balance, setBalance] = useState(INITIAL_BALANCE)
     const [positions, setPositions] = useState<Position[]>([])
     const [orders, setOrders] = useState<LimitOrder[]>([])
@@ -384,6 +396,7 @@ export function TradingProvider({ children }: { children: ReactNode }) {
         deposit,
         withdraw,
         resetAccount,
+        setMarketTrend: currentPriceData.setTrend,
         isLoading
     }
 

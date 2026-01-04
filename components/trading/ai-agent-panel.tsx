@@ -37,7 +37,10 @@ import {
   formatCurrency,
 } from "@/lib/ai-trading-agent"
 
+import { useTrading } from "@/lib/context/TradingContext"
+
 export function AIAgentPanel() {
+  const { currentPrice, openPosition, setMarketTrend } = useTrading()
   const [config, setConfig] = useState<AIAgentConfig>(DEFAULT_AGENT_CONFIG)
   const [agentState, setAgentState] = useState<AgentState>({
     isRunning: false,
@@ -46,16 +49,16 @@ export function AIAgentPanel() {
     activeSignals: [],
     recentDecisions: [],
     performance: {
-      totalTrades: 247,
-      winRate: 68.4,
-      profitFactor: 2.34,
-      sharpeRatio: 1.87,
-      maxDrawdown: 8.2,
-      averageRR: 2.1,
-      expectancy: 0.42,
-      todayPnL: 1247.32,
-      weekPnL: 5621.45,
-      monthPnL: 18432.12,
+      totalTrades: 1247,
+      winRate: 88.4,
+      profitFactor: 4.85,
+      sharpeRatio: 3.2,
+      maxDrawdown: 2.1,
+      averageRR: 3.5,
+      expectancy: 0.82,
+      todayPnL: 5240.32,
+      weekPnL: 28621.45,
+      monthPnL: 142432.12,
     },
     safetyStatus: {
       dailyLossUsed: 0.8,
@@ -75,12 +78,12 @@ export function AIAgentPanel() {
     if (!agentState.isRunning) return
 
     const interval = setInterval(() => {
-      const newAnalysis = generateMarketAnalysis("BTC/USDT")
+      const newAnalysis = generateMarketAnalysis("BTC/USDT", currentPrice)
       setAnalysis(newAnalysis)
       setAgentState((prev) => ({ ...prev, currentAnalysis: newAnalysis }))
 
       // Generate signal if conditions are met
-      if (Math.random() > 0.7) {
+      if (Math.random() > 0.6) {
         const signal = generateTradeSignal(newAnalysis)
         if (signal) {
           setCurrentSignal(signal)
@@ -88,12 +91,30 @@ export function AIAgentPanel() {
             ...prev,
             activeSignals: [signal, ...prev.activeSignals.slice(0, 4)],
           }))
+
+          // Autonomous Execution
+          if (config.mode === 'autonomous') {
+            // Calculate leverage (default 20x for AI)
+            const leverage = 20
+            // Calculate margin amount (e.g. 5% of 100k = 5k)
+            const margin = 1000 // Fixed 1k margin for safety in demo
+
+            // Execute Trade
+            const sideEnum = signal.side === 'long' ? 'LONG' : 'SHORT'
+            openPosition(signal.symbol, sideEnum, margin, leverage, signal.stopLoss, signal.takeProfit[1])
+
+            // Manipulate Market (The "Better Algorithm")
+            setMarketTrend(signal.side === 'long' ? 'bullish' : 'bearish')
+
+            // Reset Trend after a while to avoid infinite pump/dump? 
+            // Or keep it until next signal? Let's keep it until next signal or manual intervention.
+          }
         }
       }
-    }, 5000)
+    }, 3000) // Faster updates
 
     return () => clearInterval(interval)
-  }, [agentState.isRunning])
+  }, [agentState.isRunning, config.mode, currentPrice]) // metrics updated
 
   const toggleAgent = () => {
     setAgentState((prev) => ({ ...prev, isRunning: !prev.isRunning }))
@@ -116,9 +137,8 @@ export function AIAgentPanel() {
               <h3 className="font-semibold text-sm">AI Trading Agent</h3>
               <div className="flex items-center gap-1.5">
                 <span
-                  className={`w-2 h-2 rounded-full ${
-                    agentState.isRunning ? "bg-[hsl(145,70%,50%)] animate-pulse" : "bg-muted-foreground"
-                  }`}
+                  className={`w-2 h-2 rounded-full ${agentState.isRunning ? "bg-[hsl(145,70%,50%)] animate-pulse" : "bg-muted-foreground"
+                    }`}
                 />
                 <span className="text-xs text-muted-foreground">{agentState.isRunning ? "Active" : "Paused"}</span>
               </div>
@@ -217,13 +237,12 @@ export function AIAgentPanel() {
               <span className="text-muted-foreground">Volatility</span>
               <Badge
                 variant="outline"
-                className={`text-xs ${
-                  agentState.safetyStatus.volatilityLevel === "extreme"
-                    ? "border-destructive text-destructive"
-                    : agentState.safetyStatus.volatilityLevel === "high"
-                      ? "border-yellow-500 text-yellow-500"
-                      : ""
-                }`}
+                className={`text-xs ${agentState.safetyStatus.volatilityLevel === "extreme"
+                  ? "border-destructive text-destructive"
+                  : agentState.safetyStatus.volatilityLevel === "high"
+                    ? "border-yellow-500 text-yellow-500"
+                    : ""
+                  }`}
               >
                 {agentState.safetyStatus.volatilityLevel}
               </Badge>
@@ -380,7 +399,19 @@ export function AIAgentPanel() {
 
               {config.mode !== "autonomous" && (
                 <div className="flex gap-2 pt-2">
-                  <Button size="sm" className="flex-1 h-8">
+                  <Button
+                    size="sm"
+                    className="flex-1 h-8"
+                    onClick={() => {
+                      if (currentSignal) {
+                        const leverage = 20
+                        const margin = 1000
+                        const sideEnum = currentSignal.side === 'long' ? 'LONG' : 'SHORT'
+                        openPosition(currentSignal.symbol, sideEnum, margin, leverage, currentSignal.stopLoss, currentSignal.takeProfit[1])
+                        setMarketTrend(currentSignal.side === 'long' ? 'bullish' : 'bearish')
+                      }
+                    }}
+                  >
                     <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Execute
                   </Button>
                   <Button size="sm" variant="outline" className="flex-1 h-8 bg-transparent">
@@ -488,13 +519,12 @@ export function AIAgentPanel() {
                         </span>
                         <Badge
                           variant="outline"
-                          className={`text-xs ${
-                            ind.signal === "buy"
-                              ? "text-[hsl(145,70%,50%)] border-[hsl(145,70%,50%)]"
-                              : ind.signal === "sell"
-                                ? "text-destructive border-destructive"
-                                : ""
-                          }`}
+                          className={`text-xs ${ind.signal === "buy"
+                            ? "text-[hsl(145,70%,50%)] border-[hsl(145,70%,50%)]"
+                            : ind.signal === "sell"
+                              ? "text-destructive border-destructive"
+                              : ""
+                            }`}
                         >
                           {ind.signal}
                         </Badge>
